@@ -2,4 +2,4 @@ A simple calculator made in Python language using the Flet framework, inspired b
 The calculator features support for creating parentheses, order of operations, and live preview of calculations.
 The application was developed without using the eval() function.
 
-!(images/img01.png)
+![Calculator image](images/img01.png)
