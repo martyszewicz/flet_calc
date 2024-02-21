@@ -23,6 +23,7 @@ def main(page: ft.Page):
     global data
     data = "0"
 
+    # Functions handling buttons and keyboard
     def on_click(e):
         data = e.control.data
         calculator(data)
@@ -49,33 +50,29 @@ def main(page: ft.Page):
             elif data == "/":
                 calculator("÷")
 
+    # main function
     def calculator(data):
-        global result
         result = expression.handle_button_click(data)
         result = add_spaces(result)
         print(result)
         user_input.value = result
+
         try:
             evaluate_expression = calculate.evaluate_expression(result)
-            evaluate_expression = add_spaces(evaluate_expression)
-            if evaluate_expression:
-                if evaluate_expression == "ZeroDivision":
-                    result_area.value = "Error: division by zero"
-                else:
-                    result_area.value = evaluate_expression
+            if evaluate_expression == "ZeroDivision":
+                result_area.value = "Error: division by zero"
+            else:
+                result_area.value = add_spaces(evaluate_expression)
+
             if evaluate_expression == 0.0:
                 result_area.value = "0"
-            # if user click "=" button
+
             if data == "=":
-                user_input.value = evaluate_expression.replace('.', ',')
-                str_result = str(evaluate_expression)
-                str_result = str_result.replace('.', ',')
+                user_input.value = str(evaluate_expression).replace('.', ',')
+                str_result = str(evaluate_expression).replace('.', ',')
                 result = expression.handle_button_click("C")
                 for x in str_result:
-                    if x == "-":
-                        result = expression.handle_button_click("+/-")
-                    else:
-                        result = expression.handle_button_click(x)
+                    result = expression.handle_button_click("+/-" if x == "-" else x)
                 result_area.value = ""
         except:
             result_area.value = ""
