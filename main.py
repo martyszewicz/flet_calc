@@ -1,6 +1,11 @@
 import flet as ft
+from flet import KeyboardEvent
 from expression import Expression
 from calculate import Calculate
+from addspaces import add_spaces
+
+
+symbols = [",", "(", ")", ".", "-", "+", "÷", "×", "=", "C"]
 
 
 def main(page: ft.Page):
@@ -15,15 +20,44 @@ def main(page: ft.Page):
     page.bgcolor = "#000000"
 
     value = ""
-    result = 0
+    global data
+    data = "0"
 
     def on_click(e):
-        global result
         data = e.control.data
+        calculator(data)
+        return data
+
+    def on_keyboard(e: KeyboardEvent) -> str:
+        data = e.key
+        shift = e.shift
+        key_mapping = {"=": "+", "8": "×", "9": "( )", "0": "( )"}
+        if shift and data in key_mapping:
+            data = key_mapping[data]
+            calculator(data)
+        else:
+            if data.isdigit():
+                calculator(data)
+                return data
+            elif data in symbols:
+                calculator(data)
+                return data
+            elif data == "Enter":
+                calculator("=")
+            elif data == "Backspace":
+                calculator("<")
+            elif data == "/":
+                calculator("÷")
+
+    def calculator(data):
+        global result
         result = expression.handle_button_click(data)
+        result = add_spaces(result)
+        print(result)
         user_input.value = result
         try:
             evaluate_expression = calculate.evaluate_expression(result)
+            evaluate_expression = add_spaces(evaluate_expression)
             if evaluate_expression:
                 if evaluate_expression == "ZeroDivision":
                     result_area.value = "Error: division by zero"
@@ -131,6 +165,7 @@ def main(page: ft.Page):
     for row in rows:
         page.add(row)
 
+    page.on_keyboard_event = on_keyboard
     page.update()
 
 
