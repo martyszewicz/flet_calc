@@ -4,6 +4,14 @@ from expression import Expression
 from calculate import Calculate
 from addspaces import add_spaces
 
+BUTTON_TEXT_SIZE = 25
+BUTTON_WIDTH = 85
+BUTTON_HEIGHT = 50
+WINDOW_WIDTH = 412
+WINDOW_HEIGHT = 732
+RESULT_AREA_HEIGHT = 100
+RESULT_AREA_TEXT_SIZE = 40
+USER_INPUT_TEXT_SIZE = 60
 
 symbols = [",", "(", ")", ".", "-", "+", "÷", "×", "=", "C"]
 
@@ -20,8 +28,8 @@ def main(page: ft.Page):
     calculate = Calculate()
 
     page.title = "Flet Calculator by M.Artyszewicz"
-    page.window_width = 412
-    page.window_height = 732
+    page.window_width = WINDOW_WIDTH
+    page.window_height = WINDOW_HEIGHT
     page.bgcolor = "#000000"
 
     value = ""
@@ -59,7 +67,6 @@ def main(page: ft.Page):
     def calculator(data):
         result = expression.handle_button_click(data)
         result = add_spaces(result)
-        print(result)
         user_input.value = result
 
         try:
@@ -88,7 +95,7 @@ def main(page: ft.Page):
     # Create user input area and result area
     user_input = ft.TextField(
         read_only=True,
-        text_style=ft.TextStyle(size=60, color="#FBFBFB"),
+        text_style=ft.TextStyle(size=USER_INPUT_TEXT_SIZE, color="#FBFBFB"),
         text_align=ft.TextAlign.RIGHT,
         multiline=True,
         min_lines=2,
@@ -97,9 +104,9 @@ def main(page: ft.Page):
 
     result_area = ft.TextField(
         read_only=True,
-        text_style=ft.TextStyle(size=30, color="#333333"),
+        text_style=ft.TextStyle(size=RESULT_AREA_TEXT_SIZE, color="#333333"),
         text_align=ft.TextAlign.RIGHT,
-        height=100,
+        height=RESULT_AREA_HEIGHT,
         min_lines=1,
     )
 
@@ -109,15 +116,19 @@ def main(page: ft.Page):
     class Button(ft.ElevatedButton):
         def __init__(self, text, bgcolor, color, data, on_click):
             super().__init__(
-                text=text,
                 bgcolor=bgcolor,
                 color=color,
                 style=ft.ButtonStyle(padding=0),
                 on_click=on_click,
             )
+            self.text = text
+            self.content = ft.Column(
+                [ft.Text(value=self.text, size=BUTTON_TEXT_SIZE)],
+                alignment=ft.MainAxisAlignment.CENTER,
+            )
             self.data = data
-            self.width = 85
-            self.height = 50
+            self.width = BUTTON_WIDTH
+            self.height = BUTTON_HEIGHT
 
     btn_clear = Button("C", "#A5A5A5", "#000000", "C", on_click)
     btn_back = Button("<", "#A5A5A5", "#000000", "<", on_click)
