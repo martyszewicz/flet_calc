@@ -1,9 +1,6 @@
 import time
-
 import flet as ft
 from flet import KeyboardEvent
-from flet_core import IconButton, ButtonStyle, colors
-
 from expression import Expression
 from calculate import Calculate
 from addspaces import add_spaces
@@ -16,6 +13,18 @@ WINDOW_HEIGHT = 732
 RESULT_AREA_HEIGHT = 100
 RESULT_AREA_TEXT_SIZE = 35
 USER_INPUT_TEXT_SIZE = 50
+LIGHT_TEXT = "#FBFBFB"
+DARK_TEXT = "#000000"
+LIGHT_MODE_COLORS = {
+    "TOP_BUTTONS":"#3ecace",
+    "RIGHT_BUTTONS":"#24948c",
+    "BOTTOM_BUTTONS":"#9ff0ea",
+}
+DARK_MODE_COLORS = {
+    "TOP_BUTTONS":"#A5A5A5",
+    "RIGHT_BUTTONS":"#CA3302",
+    "BOTTOM_BUTTONS":"#333333",
+}
 
 symbols = [",", "(", ")", ".", "-", "+", "÷", "×", "=", "C"]
 
@@ -30,22 +39,21 @@ def main(page: ft.Page):
 
     def changetheme(e):
         page.theme_mode = "light" if page.theme_mode == "dark" else "dark"
-        time.sleep(0.5)
-        toogledarklight.selected = not toogledarklight.selected
+        time.sleep(0.3)
         for row in rows_light:
             row.visible = True if page.theme_mode == "light" else False
         for row in rows_dark:
             row.visible = True if page.theme_mode == "dark" else False
-        print(page.theme_mode)
+        switch.label = ("Light mode" if page.theme_mode == "light" else "Dark mode")
         page.update()
 
-    toogledarklight = IconButton(
-        on_click=changetheme,
-        icon="dark_mode",
-        selected_icon="light_mode",
-        style=ButtonStyle(
-            color={"": colors.BLACK, "selected": colors.WHITE}
-        )
+    switch = ft.Switch(
+        label="Light mode",
+        on_change=changetheme,
+        inactive_thumb_color=LIGHT_MODE_COLORS["RIGHT_BUTTONS"],
+        inactive_track_color=LIGHT_MODE_COLORS["BOTTOM_BUTTONS"],
+        active_color=DARK_MODE_COLORS["RIGHT_BUTTONS"],
+        active_track_color=DARK_MODE_COLORS["BOTTOM_BUTTONS"]
     )
 
     # Build expression as string
@@ -135,7 +143,7 @@ def main(page: ft.Page):
         min_lines=1,
     )
 
-    page.add(toogledarklight, user_input, result_area)
+    page.add(switch, user_input, result_area)
 
     # Create buttons
     class Button(ft.ElevatedButton):
@@ -155,95 +163,95 @@ def main(page: ft.Page):
             self.width = BUTTON_WIDTH
             self.height = BUTTON_HEIGHT
 
-    btn_clear_dark = Button("C", "#A5A5A5", "#000000", "C", on_click)
-    btn_back_dark = Button("<", "#A5A5A5", "#000000", "<", on_click)
-    btn_bracket_dark = Button("( )", "#A5A5A5", "#000000", "( )", on_click)
-    btn_divide_dark = Button("÷", "#CA3302", "#FBFBFB", "÷", on_click)
+    btn_clear_dark = Button("C", DARK_MODE_COLORS["TOP_BUTTONS"], DARK_TEXT, "C", on_click)
+    btn_back_dark = Button("<", DARK_MODE_COLORS["TOP_BUTTONS"], DARK_TEXT, "<", on_click)
+    btn_bracket_dark = Button("( )", DARK_MODE_COLORS["TOP_BUTTONS"], DARK_TEXT, "( )", on_click)
+    btn_divide_dark = Button("÷", DARK_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "÷", on_click)
     row1_dark = ft.Row(
         controls=[btn_clear_dark, btn_back_dark, btn_bracket_dark, btn_divide_dark],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=False,
     )
-    btn_clear_light = Button("C", "#3ecace", "#FBFBFB", "C", on_click)
-    btn_back_light = Button("<", "#3ecace", "#FBFBFB", "<", on_click)
-    btn_bracket_light = Button("( )", "#3ecace", "#FBFBFB", "( )", on_click)
-    btn_divide_light = Button("÷", "#24948c", "#FBFBFB", "÷", on_click)
+    btn_clear_light = Button("C", LIGHT_MODE_COLORS["TOP_BUTTONS"], LIGHT_TEXT, "C", on_click)
+    btn_back_light = Button("<", LIGHT_MODE_COLORS["TOP_BUTTONS"], LIGHT_TEXT, "<", on_click)
+    btn_bracket_light = Button("( )", LIGHT_MODE_COLORS["TOP_BUTTONS"], LIGHT_TEXT, "( )", on_click)
+    btn_divide_light = Button("÷", LIGHT_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "÷", on_click)
     row1_light = ft.Row(
         controls=[btn_clear_light, btn_back_light, btn_bracket_light, btn_divide_light],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=True,
     )
 
-    btn_7_dark = Button("7", "#333333", "#FBFBFB", "7", on_click)
-    btn_8_dark = Button("8", "#333333", "#FBFBFB", "8", on_click)
-    btn_9_dark = Button("9", "#333333", "#FBFBFB", "9", on_click)
-    btn_mult_dark = Button("×", "#CA3302", "#FBFBFB", "×", on_click)
+    btn_7_dark = Button("7", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "7", on_click)
+    btn_8_dark = Button("8", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "8", on_click)
+    btn_9_dark = Button("9", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "9", on_click)
+    btn_mult_dark = Button("×", DARK_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "×", on_click)
     row2_dark = ft.Row(
         controls=[btn_7_dark, btn_8_dark, btn_9_dark, btn_mult_dark],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=False,
     )
-    btn_7_light = Button("7", "#9ff0ea", "#000000", "7", on_click)
-    btn_8_light = Button("8", "#9ff0ea", "#000000", "8", on_click)
-    btn_9_light = Button("9", "#9ff0ea", "#000000", "9", on_click)
-    btn_mult_light = Button("×", "#24948c", "#FBFBFB", "×", on_click)
+    btn_7_light = Button("7", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "7", on_click)
+    btn_8_light = Button("8", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "8", on_click)
+    btn_9_light = Button("9", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "9", on_click)
+    btn_mult_light = Button("×", LIGHT_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "×", on_click)
     row2_light = ft.Row(
         controls=[btn_7_light, btn_8_light, btn_9_light, btn_mult_light],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=True,
     )
 
-    btn_4_dark = Button("4", "#333333", "#FBFBFB", "4", on_click)
-    btn_5_dark = Button("5", "#333333", "#FBFBFB", "5", on_click)
-    btn_6_dark = Button("6", "#333333", "#FBFBFB", "6", on_click)
-    btn_subt_dark = Button("-", "#CA3302", "#FBFBFB", "-", on_click)
+    btn_4_dark = Button("4", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "4", on_click)
+    btn_5_dark = Button("5", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "5", on_click)
+    btn_6_dark = Button("6", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "6", on_click)
+    btn_subt_dark = Button("-", "#CA3302", LIGHT_TEXT, "-", on_click)
     row3_dark = ft.Row(
         controls=[btn_4_dark, btn_5_dark, btn_6_dark, btn_subt_dark],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=False,
     )
-    btn_4_light = Button("4", "#9ff0ea", "#000000", "4", on_click)
-    btn_5_light = Button("5", "#9ff0ea", "#000000", "5", on_click)
-    btn_6_light = Button("6", "#9ff0ea", "#000000", "6", on_click)
-    btn_subt_light = Button("-", "#24948c", "#FBFBFB", "-", on_click)
+    btn_4_light = Button("4", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "4", on_click)
+    btn_5_light = Button("5", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "5", on_click)
+    btn_6_light = Button("6", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "6", on_click)
+    btn_subt_light = Button("-", LIGHT_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "-", on_click)
     row3_light = ft.Row(
         controls=[btn_4_light, btn_5_light, btn_6_light, btn_subt_light],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=True,
     )
 
-    btn_1_dark = Button("1", "#333333", "#FBFBFB", "1", on_click)
-    btn_2_dark = Button("2", "#333333", "#FBFBFB", "2", on_click)
-    btn_3_dark = Button("3", "#333333", "#FBFBFB", "3", on_click)
-    btn_add_dark = Button("+", "#CA3302", "#FBFBFB", "+", on_click)
+    btn_1_dark = Button("1", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "1", on_click)
+    btn_2_dark = Button("2", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "2", on_click)
+    btn_3_dark = Button("3", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "3", on_click)
+    btn_add_dark = Button("+", DARK_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "+", on_click)
     row4_dark = ft.Row(
         controls=[btn_1_dark, btn_2_dark, btn_3_dark, btn_add_dark],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=False,
     )
-    btn_1_light = Button("1", "#9ff0ea", "#000000", "1", on_click)
-    btn_2_light = Button("2", "#9ff0ea", "#000000", "2", on_click)
-    btn_3_light = Button("3", "#9ff0ea", "#000000", "3", on_click)
-    btn_add_light = Button("+", "#24948c", "#FBFBFB", "+", on_click)
+    btn_1_light = Button("1", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "1", on_click)
+    btn_2_light = Button("2", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "2", on_click)
+    btn_3_light = Button("3", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "3", on_click)
+    btn_add_light = Button("+", LIGHT_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "+", on_click)
     row4_light = ft.Row(
         controls=[btn_1_light, btn_2_light, btn_3_light, btn_add_light],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=True,
     )
 
-    btn_neg_dark = Button("+/-", "#333333", "#FBFBFB", "+/-", on_click)
-    btn_0_dark = Button("0", "#333333", "#FBFBFB", "0", on_click)
-    btn_dot_dark = Button(",", "#333333", "#FBFBFB", ",", on_click)
-    btn_res_dark = Button("=", "#CA3302", "#FBFBFB", "=", on_click)
+    btn_neg_dark = Button("+/-", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "+/-", on_click)
+    btn_0_dark = Button("0", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, "0", on_click)
+    btn_dot_dark = Button(",", DARK_MODE_COLORS["BOTTOM_BUTTONS"], LIGHT_TEXT, ",", on_click)
+    btn_res_dark = Button("=", DARK_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "=", on_click)
     row5_dark = ft.Row(
         controls=[btn_neg_dark, btn_0_dark, btn_dot_dark, btn_res_dark],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         visible=False,
     )
-    btn_neg_light = Button("+/-", "#9ff0ea", "#000000", "+/-", on_click)
-    btn_0_light = Button("0", "#9ff0ea", "#000000", "0", on_click)
-    btn_dot_light = Button(",", "#9ff0ea", "#000000", ",", on_click)
-    btn_res_light = Button("=", "#24948c", "#FBFBFB", "=", on_click)
+    btn_neg_light = Button("+/-", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "+/-", on_click)
+    btn_0_light = Button("0", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, "0", on_click)
+    btn_dot_light = Button(",", LIGHT_MODE_COLORS["BOTTOM_BUTTONS"], DARK_TEXT, ",", on_click)
+    btn_res_light = Button("=", LIGHT_MODE_COLORS["RIGHT_BUTTONS"], LIGHT_TEXT, "=", on_click)
     row5_light = ft.Row(
         controls=[btn_neg_light, btn_0_light, btn_dot_light, btn_res_light],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
